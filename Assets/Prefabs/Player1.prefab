@@ -13,7 +13,7 @@ Prefab:
   m_IsPrefabAsset: 1
 --- !u!1 &1077392765117654
 GameObject:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 6
@@ -56,6 +56,7 @@ GameObject:
   - component: {fileID: 33030572548599520}
   - component: {fileID: 23062490971579034}
   - component: {fileID: 135520155882021564}
+  - component: {fileID: 54315479782204408}
   m_Layer: 0
   m_Name: Sphere
   m_TagString: Untagged
@@ -90,7 +91,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4430113296399134}
   - component: {fileID: 114540554120225878}
-  - component: {fileID: 54242131629688602}
   m_Layer: 0
   m_Name: Player1
   m_TagString: Player
@@ -157,7 +157,6 @@ Transform:
   m_Children:
   - {fileID: 4491397115357040}
   - {fileID: 4885002307271580}
-  - {fileID: 4679871692032654}
   - {fileID: 4518161440285348}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -184,9 +183,10 @@ Transform:
   m_LocalRotation: {x: -0.5, y: -0.5, z: -0.5, w: 0.5}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 4679871692032654}
   m_Father: {fileID: 4430113296399134}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: -90}
 --- !u!4 &4663498989357964
 Transform:
@@ -207,13 +207,13 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1077392765117654}
-  m_LocalRotation: {x: 0.25017416, y: -0, z: -0, w: 0.96820086}
-  m_LocalPosition: {x: 0, y: 3.3380003, z: -8.246}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: 0.66955906, y: 0.66955906, z: 0.22735591, w: 0.22735591}
+  m_LocalPosition: {x: -23.48, y: 0, z: 29.100002}
+  m_LocalScale: {x: 1, y: 35.530083, z: 35.53009}
   m_Children: []
-  m_Father: {fileID: 4430113296399134}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 28.976002, y: 0, z: 0}
+  m_Father: {fileID: 4518161440285348}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 52.489002, y: 0, z: 0}
 --- !u!4 &4885002307271580
 Transform:
   m_ObjectHideFlags: 1
@@ -250,7 +250,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 26
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -394,12 +394,12 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1607489756394596}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
---- !u!54 &54242131629688602
+--- !u!54 &54315479782204408
 Rigidbody:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1742730352701210}
+  m_GameObject: {fileID: 1498074832878472}
   serializedVersion: 2
   m_Mass: 5
   m_Drag: 4
@@ -433,19 +433,20 @@ MonoBehaviour:
   spinParticles: {fileID: 198971530789676614}
   grabbing: 0
   movementSpeed: 130
-  jumpForce: 800
+  jumpForce: 1000
   rotationSpeed: 3
   pushForce: 60
   grabbableObjects: []
   spinLastDirection: 0
   spinValue: 0
-  spinLevel1: 0
+  spinLevel1: 200
   spinLevel2: 0
   spinLimit: 0
-  spinDrop: 120
+  spinMount: 1.7
+  spinDrop: 260
   spinForceRatio: 18
   spinRotationSpeedRatio: 900
-  spinEmissionRatio: 50
+  spinEmissionRatio: 40
 --- !u!135 &135520155882021564
 SphereCollider:
   m_ObjectHideFlags: 1

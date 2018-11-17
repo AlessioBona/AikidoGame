@@ -13,6 +13,7 @@ public class PlayerMovement : MonoBehaviour {
     string yMovementAxis;
     string jumpButton;
     string grabButton;
+    Quaternion directionTo;
 
     public bool grabbing = false;
 
@@ -32,7 +33,8 @@ public class PlayerMovement : MonoBehaviour {
         yMovementAxis = "Vertical" + playerID;
         jumpButton = "Jump" + playerID;
         grabButton = "Grab" + playerID;
-        rb = GetComponent<Rigidbody>();
+        rb = GetComponentInChildren<Rigidbody>();
+        directionTo = cylinder.transform.rotation;
 
     }
 
@@ -93,11 +95,24 @@ public class PlayerMovement : MonoBehaviour {
 
     private void FixedUpdate()
     {
+        
+
+
         if (Input.GetAxis(xMovementAxis) != 0 || Input.GetAxis(yMovementAxis) != 0) { 
         rb.AddForce(new Vector3(Input.GetAxis(xMovementAxis)*movementSpeed, 0, -Input.GetAxis(yMovementAxis)*movementSpeed));
-        Quaternion directionTo = Quaternion.Euler(new Vector3(0, Mathf.Atan2(Input.GetAxis(xMovementAxis), -Input.GetAxis(yMovementAxis)) * 180 / Mathf.PI, 0));
-        cylinder.transform.rotation = Quaternion.Slerp(cylinder.transform.rotation, directionTo, Time.deltaTime*(rotationSpeed + spinValue/spinRotationSpeedRatio));
+        directionTo = Quaternion.Euler(new Vector3(0, Mathf.Atan2(Input.GetAxis(xMovementAxis), -Input.GetAxis(yMovementAxis)) * 180 / Mathf.PI, 0));
         }
+
+        if (directionTo != cylinder.transform.rotation)
+        {
+            cylinder.transform.rotation = Quaternion.Slerp(cylinder.transform.rotation, directionTo, Time.deltaTime * (rotationSpeed + spinValue / spinRotationSpeedRatio));
+        }
+
+        cylinder.transform.position = new Vector3(rb.transform.position.x, 0.1f, rb.transform.position.z);
+        spinParticles.transform.position = new Vector3(rb.transform.position.x, 0.1f, rb.transform.position.z);
+
+
+
 
 
         if (Input.GetButton(jumpButton) && rb.transform.position.y < 0.7f)
@@ -142,6 +157,7 @@ public class PlayerMovement : MonoBehaviour {
             // or cylinder.transform.forward*80;
             // or new Vector3(Input.GetAxis(xMovementAxis), 0, -Input.GetAxis(yMovementAxis)).normalized*100
             grabbableObjects[0].GetComponent<Rigidbody>().AddForce(pushDir * (pushForce + (Mathf.Abs(spinValue) /spinForceRatio)));
+            spinValue = 0;
         }
 
     }
