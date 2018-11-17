@@ -22,6 +22,8 @@ public class PlayerMovement : MonoBehaviour
     public float rotationSpeed;
     public float pushForce;
 
+    public int canJumpCounter = 0;
+
     public List<GameObject> grabbableObjects;
 
     [System.Serializable]
@@ -92,7 +94,7 @@ public class PlayerMovement : MonoBehaviour
             );
         }
 
-        if (Input.GetButton(jumpButton) && state.canJump)
+        if (Input.GetButton(jumpButton) && canJumpCounter > 0)
         {
 
             Debug.Log("jumping");

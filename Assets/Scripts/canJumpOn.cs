@@ -18,7 +18,7 @@ public class canJumpOn : MonoBehaviour {
     {
         if(other.tag == "jumpChecker")
         {
-            other.GetComponentInParent<PlayerMovement>().state.canJump = true;
+            other.GetComponentInParent<PlayerMovement>().canJumpCounter++;
         }
     }
 
@@ -26,7 +26,7 @@ public class canJumpOn : MonoBehaviour {
     {
         if (other.tag == "jumpChecker")
         {
-            other.GetComponentInParent<PlayerMovement>().state.canJump = false;
+            other.GetComponentInParent<PlayerMovement>().canJumpCounter--;
         }
     }
 }
