@@ -424,7 +424,7 @@ GameObject:
   - component: {fileID: 974618649}
   - component: {fileID: 974618648}
   m_Layer: 0
-  m_Name: Player1 (1)
+  m_Name: Player2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -441,6 +441,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ae3e998848785a42b70170f14a20670, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerID: 2
   movementSpeed: 130
   jumpForce: 800
 --- !u!4 &974618649
@@ -596,6 +597,11 @@ Prefab:
     - target: {fileID: 4430113296399134, guid: 4f51367e491a28b41abcbb4a44759d73, type: 2}
       propertyPath: m_RootOrder
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114540554120225878, guid: 4f51367e491a28b41abcbb4a44759d73,
+        type: 2}
+      propertyPath: playerID
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4f51367e491a28b41abcbb4a44759d73, type: 2}

@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour {
 
+    public string playerID;
+
+    string xMovementAxis;
+    string yMovementAxis;
+    string jumpButton;
+
     Rigidbody rb;
     public float movementSpeed;
     public float jumpForce;
@@ -11,7 +17,11 @@ public class PlayerMovement : MonoBehaviour {
 
     private void Awake()
     {
+        xMovementAxis = "Horizontal" + playerID;
+        yMovementAxis = "Vertical" + playerID;
+        jumpButton = "Jump" + playerID;
         rb = GetComponentInChildren<Rigidbody>();
+
     }
 
     // Use this for initialization
@@ -26,10 +36,10 @@ public class PlayerMovement : MonoBehaviour {
 
     private void FixedUpdate()
     {
-        if (Input.GetAxis("Horizontal1") != 0.0f || Input.GetAxis("Vertical1") != 0.0f) { 
-        rb.AddForce(new Vector3(-Input.GetAxis("Horizontal1")*movementSpeed, 0, Input.GetAxis("Vertical1")*movementSpeed));
+        if (Input.GetAxis(xMovementAxis) != 0.0f || Input.GetAxis(yMovementAxis) != 0.0f) { 
+        rb.AddForce(new Vector3(Input.GetAxis(xMovementAxis)*movementSpeed, 0, Input.GetAxis(yMovementAxis)*movementSpeed));
         }
-        if (Input.GetButton("Jump1") && rb.transform.position.y < 0.7f)
+        if (Input.GetButton(jumpButton) && rb.transform.position.y < 0.7f)
         {
             Debug.Log("jumping");
             canJump = false;
