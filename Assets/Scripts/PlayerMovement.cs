@@ -7,7 +7,6 @@ public class PlayerMovement : MonoBehaviour
     public string playerID;
     public GameObject cylinder;
     public GameObject grabbingPoint;
-    public ParticleSystem spinParticles;
 
     string xMovementAxis;
     string yMovementAxis;
@@ -36,53 +35,57 @@ public class PlayerMovement : MonoBehaviour
         directionTo = cylinder.transform.rotation;
     }
 
-    public float spinLastDirection;
-    public float spinValue;
-    public float spinLevel1;
-    public float spinLevel2;
-    public float spinLimit;
-    public float spinMount;
-    public float spinDrop;
-
-    public float spinForceRatio;
-    public float spinRotationSpeedRatio;
-    public float spinEmissionRatio;
-
+    [System.Serializable]
+    public struct Spin {
+        public float lastDirection;
+        public float value;
+        public float level1;
+        public float level2;
+        public float limit;
+        public float mount;
+        public float drop;
+        public float forceRatio;
+        public float rotationSpeedRatio;
+        public float emissionRatio;
+        public ParticleSystem particles;
+    }
+    public Spin spin;
+    
     void Update()
     {
-        Debug.Log(spinValue);
+        Debug.Log(spin.value);
 
-        if (spinParticles.isPlaying && Mathf.Abs(spinValue) < spinLevel1)
+        if (spin.particles.isPlaying && Mathf.Abs(spin.value) < spin.level1)
         {
-            spinParticles.Stop();
+            spin.particles.Stop();
         }
-        if (!spinParticles.isPlaying && Mathf.Abs(spinValue) > spinLevel1)
+        if (!spin.particles.isPlaying && Mathf.Abs(spin.value) > spin.level1)
         {
-            spinParticles.Play();
+            spin.particles.Play();
         }
 
         if (grabbing)
         {
-            float spinDifference = spinLastDirection -
+            float spinDifference = spin.lastDirection -
                 cylinder.transform.rotation.eulerAngles.y;
             if (spinDifference < 200 && spinDifference > -200)
             {
-                spinValue += spinDifference * spinMount;
-                var emission = spinParticles.emission;
-                emission.rateOverTime = Mathf.Abs(spinValue) / spinEmissionRatio;
+                spin.value += spinDifference * spin.mount;
+                var emission = spin.particles.emission;
+                emission.rateOverTime = Mathf.Abs(spin.value) / spin.emissionRatio;
             }
-            spinLastDirection = cylinder.transform.rotation.eulerAngles.y;
+            spin.lastDirection = cylinder.transform.rotation.eulerAngles.y;
         }
 
-        if (spinValue != 0)
+        if (spin.value != 0)
         {
-            if (spinValue > spinDrop * Time.deltaTime)
+            if (spin.value > spin.drop * Time.deltaTime)
             {
-                spinValue -= spinDrop * Time.deltaTime;
+                spin.value -= spin.drop * Time.deltaTime;
             }
-            if (spinValue < spinDrop * Time.deltaTime)
+            if (spin.value < spin.drop * Time.deltaTime)
             {
-                spinValue += spinDrop * Time.deltaTime;
+                spin.value += spin.drop * Time.deltaTime;
             }
         }
     }
@@ -112,13 +115,13 @@ public class PlayerMovement : MonoBehaviour
             cylinder.transform.rotation = Quaternion.Slerp(
                 cylinder.transform.rotation,
                 directionTo,
-                Time.deltaTime * (rotationSpeed + spinValue / spinRotationSpeedRatio));
+                Time.deltaTime * (rotationSpeed + spin.value / spin.rotationSpeedRatio));
         }
 
         cylinder.transform.position = new Vector3(
             rb.transform.position.x, 0.1f, rb.transform.position.z
         );
-        spinParticles.transform.position = new Vector3(
+        spin.particles.transform.position = new Vector3(
             rb.transform.position.x, 0.1f, rb.transform.position.z
         );
 
@@ -137,7 +140,7 @@ public class PlayerMovement : MonoBehaviour
             cylinder.transform.rotation = Quaternion.LookRotation(relativePos);
             grabbingPoint.transform.position = grabbableObjects[0].transform.position;
 
-            spinLastDirection = cylinder.transform.rotation.eulerAngles.y;
+            spin.lastDirection = cylinder.transform.rotation.eulerAngles.y;
             grabbing = true;
         }
 
@@ -157,9 +160,9 @@ public class PlayerMovement : MonoBehaviour
             Vector3 pushDir = cylinder.transform.forward * 50;
             Debug.Log(pushDir);
             grabbableObjects[0].GetComponent<Rigidbody>().AddForce(
-                pushDir * (pushForce + (Mathf.Abs(spinValue) / spinForceRatio))
+                pushDir * (pushForce + (Mathf.Abs(spin.value) / spin.forceRatio))
             );
-            spinValue = 0;
+            spin.value = 0;
         }
     }
 }
