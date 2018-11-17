@@ -14,29 +14,29 @@ public class PlayerMovement : MonoBehaviour
     string grabButton;
     Quaternion directionTo;
 
-    public bool grabbing = false;
-
     Rigidbody rb;
     public float movementSpeed;
     public float jumpForce;
     public float rotationSpeed;
     public float pushForce;
-    bool canJump = true;
 
     public List<GameObject> grabbableObjects;
 
-    private void Awake()
+    public struct State
     {
-        xMovementAxis = "Horizontal" + playerID;
-        yMovementAxis = "Vertical" + playerID;
-        jumpButton = "Jump" + playerID;
-        grabButton = "Grab" + playerID;
-        rb = GetComponentInChildren<Rigidbody>();
-        directionTo = cylinder.transform.rotation;
+        public bool canJump, grabbing;
+
+        public State(bool p1, bool p2)
+        {
+            canJump = p1;
+            grabbing = p2;
+        }
     }
+    private State state = new State(true, false);
 
     [System.Serializable]
-    public struct Spin {
+    public struct Spin
+    {
         public float lastDirection;
         public float value;
         public float level1;
@@ -50,7 +50,17 @@ public class PlayerMovement : MonoBehaviour
         public ParticleSystem particles;
     }
     public Spin spin;
-    
+
+    private void Awake()
+    {
+        xMovementAxis = "Horizontal" + playerID;
+        yMovementAxis = "Vertical" + playerID;
+        jumpButton = "Jump" + playerID;
+        grabButton = "Grab" + playerID;
+        rb = GetComponentInChildren<Rigidbody>();
+        directionTo = cylinder.transform.rotation;
+    }
+
     void Update()
     {
         Debug.Log(spin.value);
@@ -64,7 +74,7 @@ public class PlayerMovement : MonoBehaviour
             spin.particles.Play();
         }
 
-        if (grabbing)
+        if (state.grabbing)
         {
             float spinDifference = spin.lastDirection -
                 cylinder.transform.rotation.eulerAngles.y;
@@ -128,10 +138,10 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetButton(jumpButton) && rb.transform.position.y < 0.7f)
         {
             Debug.Log("jumping");
-            canJump = false;
+            state.canJump = false;
             rb.AddForce(new Vector3(0, jumpForce, 0));
         }
-        if (Input.GetButton(grabButton) && grabbableObjects.Count > 0 && !grabbing)
+        if (Input.GetButton(grabButton) && grabbableObjects.Count > 0 && !state.grabbing)
         {
             Debug.Log("grab object");
             Vector3 relativePos = grabbableObjects[0].transform.position -
@@ -141,10 +151,10 @@ public class PlayerMovement : MonoBehaviour
             grabbingPoint.transform.position = grabbableObjects[0].transform.position;
 
             spin.lastDirection = cylinder.transform.rotation.eulerAngles.y;
-            grabbing = true;
+            state.grabbing = true;
         }
 
-        if (grabbing)
+        if (state.grabbing)
         {
             Vector3 actualXZ = new Vector3(
                 grabbingPoint.transform.position.x,
@@ -154,9 +164,9 @@ public class PlayerMovement : MonoBehaviour
             grabbableObjects[0].transform.position = actualXZ;
         }
 
-        if (!Input.GetButton(grabButton) && grabbing)
+        if (!Input.GetButton(grabButton) && state.grabbing)
         {
-            grabbing = false;
+            state.grabbing = false;
             Vector3 pushDir = cylinder.transform.forward * 50;
             Debug.Log(pushDir);
             grabbableObjects[0].GetComponent<Rigidbody>().AddForce(
