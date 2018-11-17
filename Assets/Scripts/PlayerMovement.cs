@@ -7,6 +7,7 @@ public class PlayerMovement : MonoBehaviour {
     public string playerID;
     public GameObject cylinder;
     public GameObject grabbingPoint;
+    public ParticleSystem spinParticles;
 
     string xMovementAxis;
     string yMovementAxis;
@@ -39,19 +40,63 @@ public class PlayerMovement : MonoBehaviour {
     void Start () {
 		
 	}
-	
+
+    public float spinLastDirection;
+    public float spinValue;
+    public float spinLevel1;
+    public float spinLevel2;
+    public float spinLimit;
+    public float spinMount;
+    public float spinDrop;
+
+    public float spinForceRatio;
+    public float spinRotationSpeedRatio;
+    public float spinEmissionRatio;
+
 	// Update is called once per frame
 	void Update () {
-		
+        Debug.Log(spinValue);
+
+        if(spinParticles.isPlaying && Mathf.Abs(spinValue) < spinLevel1)
+        {
+            spinParticles.Stop();
+        }
+        if(!spinParticles.isPlaying && Mathf.Abs(spinValue) > spinLevel1)
+        {
+            spinParticles.Play();
+        }
+
+        if (grabbing)
+        {
+            float spinDifference  = spinLastDirection - cylinder.transform.rotation.eulerAngles.y;
+            if (spinDifference < 200 && spinDifference > -200)
+            {
+                spinValue += spinDifference*spinMount;
+                var emission = spinParticles.emission;
+                emission.rateOverTime = Mathf.Abs(spinValue) / spinEmissionRatio;
+            }
+            spinLastDirection = cylinder.transform.rotation.eulerAngles.y;
+        }
+
+        if(spinValue != 0)
+        {
+            if(spinValue > spinDrop*Time.deltaTime)
+            {
+                spinValue -= spinDrop*Time.deltaTime;
+            }
+            if(spinValue < spinDrop*Time.deltaTime)
+            {
+                spinValue += spinDrop*Time.deltaTime;
+            }
+        }
 	}
 
     private void FixedUpdate()
     {
         if (Input.GetAxis(xMovementAxis) != 0 || Input.GetAxis(yMovementAxis) != 0) { 
         rb.AddForce(new Vector3(Input.GetAxis(xMovementAxis)*movementSpeed, 0, -Input.GetAxis(yMovementAxis)*movementSpeed));
-            Quaternion directionTo = Quaternion.Euler(new Vector3(0, Mathf.Atan2(Input.GetAxis(xMovementAxis), -Input.GetAxis(yMovementAxis)) * 180 / Mathf.PI, 0));
-        cylinder.transform.rotation = Quaternion.Slerp(cylinder.transform.rotation, directionTo, Time.deltaTime*rotationSpeed);
-        
+        Quaternion directionTo = Quaternion.Euler(new Vector3(0, Mathf.Atan2(Input.GetAxis(xMovementAxis), -Input.GetAxis(yMovementAxis)) * 180 / Mathf.PI, 0));
+        cylinder.transform.rotation = Quaternion.Slerp(cylinder.transform.rotation, directionTo, Time.deltaTime*(rotationSpeed + spinValue/spinRotationSpeedRatio));
         }
 
 
@@ -78,7 +123,7 @@ public class PlayerMovement : MonoBehaviour {
 
             //grabbableObjects[0].GetComponent<EnemyBehaviour>().grabbed = true;
 
-
+            spinLastDirection = cylinder.transform.rotation.eulerAngles.y;
             grabbing = true;
         }
 
@@ -96,7 +141,7 @@ public class PlayerMovement : MonoBehaviour {
             Debug.Log(pushDir);
             // or cylinder.transform.forward*80;
             // or new Vector3(Input.GetAxis(xMovementAxis), 0, -Input.GetAxis(yMovementAxis)).normalized*100
-            grabbableObjects[0].GetComponent<Rigidbody>().AddForce(pushDir * pushForce);
+            grabbableObjects[0].GetComponent<Rigidbody>().AddForce(pushDir * (pushForce + (Mathf.Abs(spinValue) /spinForceRatio)));
         }
 
     }
