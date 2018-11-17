@@ -19,6 +19,8 @@ public class PlayerMovement : MonoBehaviour {
     Rigidbody rb;
     public float movementSpeed;
     public float jumpForce;
+    public float rotationSpeed;
+    public float pushForce;
     bool canJump = true;
 
     public List<GameObject> grabbableObjects;
@@ -45,9 +47,14 @@ public class PlayerMovement : MonoBehaviour {
 
     private void FixedUpdate()
     {
-        if (Input.GetAxis(xMovementAxis) != 0.0f || Input.GetAxis(yMovementAxis) != 0.0f) { 
+        if (Input.GetAxis(xMovementAxis) != 0 || Input.GetAxis(yMovementAxis) != 0) { 
         rb.AddForce(new Vector3(Input.GetAxis(xMovementAxis)*movementSpeed, 0, -Input.GetAxis(yMovementAxis)*movementSpeed));
+            Quaternion directionTo = Quaternion.Euler(new Vector3(0, Mathf.Atan2(Input.GetAxis(xMovementAxis), -Input.GetAxis(yMovementAxis)) * 180 / Mathf.PI, 0));
+        cylinder.transform.rotation = Quaternion.Slerp(cylinder.transform.rotation, directionTo, Time.deltaTime*rotationSpeed);
+        
         }
+
+
         if (Input.GetButton(jumpButton) && rb.transform.position.y < 0.7f)
         {
             Debug.Log("jumping");
@@ -56,6 +63,9 @@ public class PlayerMovement : MonoBehaviour {
         }
         if (Input.GetButton(grabButton) && grabbableObjects.Count > 0 && !grabbing) {
             Debug.Log("grab object");
+            Vector3 relativePos = grabbableObjects[0].transform.position - cylinder.transform.position;
+            relativePos.y = 0;
+            cylinder.transform.rotation = Quaternion.LookRotation(relativePos);
             grabbingPoint.transform.position = grabbableObjects[0].transform.position;
 
 
@@ -68,18 +78,25 @@ public class PlayerMovement : MonoBehaviour {
 
             //grabbableObjects[0].GetComponent<EnemyBehaviour>().grabbed = true;
 
-            Rigidbody enemyRb;
-            enemyRb = grabbableObjects[0].GetComponent<Rigidbody>();
 
             grabbing = true;
-
-
-
         }
 
         if (grabbing)
         {
-            grabbableObjects[0].transform.position = grabbingPoint.transform.position;
+            Vector3 actualXZ = new Vector3(grabbingPoint.transform.position.x, grabbableObjects[0].transform.position.y, grabbingPoint.transform.position.z);
+            grabbableObjects[0].transform.position = actualXZ;
+        }
+
+        if (!Input.GetButton(grabButton) && grabbing)
+        {
+            //let the grab
+            grabbing = false;
+            Vector3 pushDir = cylinder.transform.forward * 50;
+            Debug.Log(pushDir);
+            // or cylinder.transform.forward*80;
+            // or new Vector3(Input.GetAxis(xMovementAxis), 0, -Input.GetAxis(yMovementAxis)).normalized*100
+            grabbableObjects[0].GetComponent<Rigidbody>().AddForce(pushDir * pushForce);
         }
 
     }
