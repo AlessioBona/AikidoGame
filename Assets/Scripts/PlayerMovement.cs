@@ -24,9 +24,11 @@ public class PlayerMovement : MonoBehaviour
 
     public List<GameObject> grabbableObjects;
 
+    [System.Serializable]
     public struct State
     {
-        public bool canJump, grabbing;
+        public bool canJump;
+        public bool grabbing;
 
         public State(bool p1, bool p2)
         {
@@ -34,7 +36,7 @@ public class PlayerMovement : MonoBehaviour
             grabbing = p2;
         }
     }
-    private State state = new State(true, false);
+    public State state = new State(true, false);
 
     [System.Serializable]
     public struct Spin
@@ -90,11 +92,10 @@ public class PlayerMovement : MonoBehaviour
             );
         }
 
-        if (Input.GetButton(jumpButton) && rb.transform.position.y < 0.7f)
+        if (Input.GetButton(jumpButton) && state.canJump)
         {
 
             Debug.Log("jumping");
-            state.canJump = false;
             rb.AddForce(new Vector3(0, jumpForce, 0));
         }
 
@@ -103,7 +104,6 @@ public class PlayerMovement : MonoBehaviour
 
     void grabUpdate()
     {
-        Debug.Log(spin.value);
 
         if (spin.particles.isPlaying && Mathf.Abs(spin.value) < spin.level1)
         {
@@ -150,9 +150,8 @@ public class PlayerMovement : MonoBehaviour
                 Time.deltaTime * (rotationSpeed + spin.value / spin.rotationSpeedRatio));
         }
 
-        cylinder.transform.position = new Vector3(
-            rb.transform.position.x, 0.1f, rb.transform.position.z
-        );
+        cylinder.transform.position = rb.transform.position;
+
         spin.particles.transform.position = new Vector3(
             rb.transform.position.x, 0.1f, rb.transform.position.z
         );
@@ -197,12 +196,16 @@ public class PlayerMovement : MonoBehaviour
         {
             state.grabbing = false;
             Vector3 pushDir = cylinder.transform.forward * 50;
-            Debug.Log(pushDir);
             grabbedObject.GetComponent<Rigidbody>().AddForce(
                 pushDir * (pushForce + (Mathf.Abs(spin.value) / spin.forceRatio))
             );
             spin.value = 0;
             grabbedObject = null;
         }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log(other.name);
     }
 }

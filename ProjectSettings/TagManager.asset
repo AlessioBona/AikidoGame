@@ -6,6 +6,7 @@ TagManager:
   tags:
   - FloorCollider
   - Enemy
+  - jumpChecker
   layers:
   - Default
   - TransparentFX
