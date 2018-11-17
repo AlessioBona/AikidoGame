@@ -66,6 +66,43 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        grabUpdate();
+    }
+
+    private void FixedUpdate()
+    {
+
+        if (Input.GetAxis(xMovementAxis) != 0 || Input.GetAxis(yMovementAxis) != 0)
+        {
+            rb.AddForce(
+                new Vector3(
+                    Input.GetAxis(xMovementAxis) * movementSpeed,
+                    0,
+                    -Input.GetAxis(yMovementAxis) * movementSpeed
+                )
+            );
+            directionTo = Quaternion.Euler(
+                new Vector3(
+                    0,
+                    Mathf.Atan2(Input.GetAxis(xMovementAxis),
+                                -Input.GetAxis(yMovementAxis)) * 180 / Mathf.PI,
+                    0)
+            );
+        }
+
+        if (Input.GetButton(jumpButton) && rb.transform.position.y < 0.7f)
+        {
+
+            Debug.Log("jumping");
+            state.canJump = false;
+            rb.AddForce(new Vector3(0, jumpForce, 0));
+        }
+
+        grabFixedUpdate(Input.GetButton(grabButton));
+    }
+
+    void grabUpdate()
+    {
         Debug.Log(spin.value);
 
         if (spin.particles.isPlaying && Mathf.Abs(spin.value) < spin.level1)
@@ -103,29 +140,8 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void FixedUpdate()
+    void grabFixedUpdate(bool grabButtonPressed)
     {
-
-        if (Input.GetAxis(xMovementAxis) != 0 || Input.GetAxis(yMovementAxis) != 0)
-        {
-            rb.AddForce(
-                new Vector3(
-                    Input.GetAxis(xMovementAxis) * movementSpeed,
-                    0,
-                    -Input.GetAxis(yMovementAxis) * movementSpeed
-                )
-            );
-            directionTo = Quaternion.Euler(
-                new Vector3(
-                    0,
-                    Mathf.Atan2(Input.GetAxis(xMovementAxis),
-                                -Input.GetAxis(yMovementAxis)) * 180 / Mathf.PI,
-                    0)
-            );
-        }
-
-
-
         if (directionTo != cylinder.transform.rotation)
         {
             cylinder.transform.rotation = Quaternion.Slerp(
@@ -141,14 +157,7 @@ public class PlayerMovement : MonoBehaviour
             rb.transform.position.x, 0.1f, rb.transform.position.z
         );
 
-        if (Input.GetButton(jumpButton) && rb.transform.position.y < 0.7f)
-        {
-
-            Debug.Log("jumping");
-            state.canJump = false;
-            rb.AddForce(new Vector3(0, jumpForce, 0));
-        }
-        if (Input.GetButton(grabButton) && grabbableObjects.Count > 0 && !state.grabbing)
+        if (grabButtonPressed && grabbableObjects.Count > 0 && !state.grabbing)
         {
             Debug.Log("grab object");
             GameObject toBeGrabbed = null;
@@ -184,7 +193,7 @@ public class PlayerMovement : MonoBehaviour
             grabbedObject.transform.position = actualXZ;
         }
 
-        if (!Input.GetButton(grabButton) && state.grabbing)
+        if (!grabButtonPressed && state.grabbing)
         {
             state.grabbing = false;
             Vector3 pushDir = cylinder.transform.forward * 50;
