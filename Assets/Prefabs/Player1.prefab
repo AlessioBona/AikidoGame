@@ -460,24 +460,24 @@ MonoBehaviour:
   playerID: 1
   cylinder: {fileID: 1607489756394596}
   grabbingPoint: {fileID: 1974411577589626}
-  spinParticles: {fileID: 198971530789676614}
   grabbedObject: {fileID: 0}
-  grabbing: 0
   movementSpeed: 130
   jumpForce: 1000
   rotationSpeed: 3
   pushForce: 60
   grabbableObjects: []
-  spinLastDirection: 0
-  spinValue: 0
-  spinLevel1: 200
-  spinLevel2: 0
-  spinLimit: 0
-  spinMount: 1.7
-  spinDrop: 260
-  spinForceRatio: 18
-  spinRotationSpeedRatio: 900
-  spinEmissionRatio: 40
+  spin:
+    lastDirection: 0
+    value: 0
+    level1: 200
+    level2: 0
+    limit: 0
+    mount: 1.7
+    drop: 260
+    forceRatio: 18
+    rotationSpeedRatio: 900
+    emissionRatio: 40
+    particles: {fileID: 198971530789676614}
 --- !u!119 &119658913027984368
 Projector:
   m_ObjectHideFlags: 1
