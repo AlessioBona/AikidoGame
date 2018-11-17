@@ -8,6 +8,7 @@ public class PlayerMovement : MonoBehaviour {
     public GameObject cylinder;
     public GameObject grabbingPoint;
     public ParticleSystem spinParticles;
+    public GameObject grabbedObject;
 
     string xMovementAxis;
     string yMovementAxis;
@@ -57,7 +58,6 @@ public class PlayerMovement : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-        Debug.Log(spinValue);
 
         if(spinParticles.isPlaying && Mathf.Abs(spinValue) < spinLevel1)
         {
@@ -100,8 +100,13 @@ public class PlayerMovement : MonoBehaviour {
 
         if (Input.GetAxis(xMovementAxis) != 0 || Input.GetAxis(yMovementAxis) != 0) { 
         rb.AddForce(new Vector3(Input.GetAxis(xMovementAxis)*movementSpeed, 0, -Input.GetAxis(yMovementAxis)*movementSpeed));
-        directionTo = Quaternion.Euler(new Vector3(0, Mathf.Atan2(Input.GetAxis(xMovementAxis), -Input.GetAxis(yMovementAxis)) * 180 / Mathf.PI, 0));
+            if (Mathf.Abs(Input.GetAxis(xMovementAxis)) > 0.7f || Mathf.Abs(Input.GetAxis(yMovementAxis)) > 0.7f)
+            {
+                directionTo = Quaternion.Euler(new Vector3(0, Mathf.Atan2(Input.GetAxis(xMovementAxis), -Input.GetAxis(yMovementAxis)) * 180 / Mathf.PI, 0));
+            }
         }
+
+
 
         if (directionTo != cylinder.transform.rotation)
         {
@@ -117,26 +122,41 @@ public class PlayerMovement : MonoBehaviour {
 
         if (Input.GetButton(jumpButton) && rb.transform.position.y < 0.7f)
         {
-            Debug.Log("jumping");
             canJump = false;
             rb.AddForce(new Vector3(0, jumpForce, 0));
         }
+
+        // try to grab
         if (Input.GetButton(grabButton) && grabbableObjects.Count > 0 && !grabbing) {
-            Debug.Log("grab object");
-            Vector3 relativePos = grabbableObjects[0].transform.position - cylinder.transform.position;
+
+            GameObject toBeGrabbed = null;
+            float minDist = Mathf.Infinity;
+            Vector3 currentPos = rb.transform.position;
+            foreach (GameObject enemy in grabbableObjects)
+            {
+                float dist = Vector3.Distance(enemy.transform.position, currentPos);
+                if (dist < minDist)
+                {
+                    toBeGrabbed = enemy;
+                    minDist = dist;
+                }
+            }
+            grabbedObject = toBeGrabbed;
+
+            Vector3 relativePos = grabbedObject.transform.position - cylinder.transform.position;
             relativePos.y = 0;
             cylinder.transform.rotation = Quaternion.LookRotation(relativePos);
-            grabbingPoint.transform.position = grabbableObjects[0].transform.position;
+            grabbingPoint.transform.position = grabbedObject.transform.position;
 
 
             //Rigidbody enemyRb;
-            //enemyRb = grabbableObjects[0].GetComponent<Rigidbody>();
+            //enemyRb = grabbedObject.GetComponent<Rigidbody>();
             //enemyRb.mass = 0.1f;
             //enemyRb.velocity = new Vector3(0,0,0);
             //enemyRb.isKinematic = true;
-            //grabbableObjects[0].transform.SetParent(cylinder.transform);
+            //grabbedObject.transform.SetParent(cylinder.transform);
 
-            //grabbableObjects[0].GetComponent<EnemyBehaviour>().grabbed = true;
+            //grabbedObject.GetComponent<EnemyBehaviour>().grabbed = true;
 
             spinLastDirection = cylinder.transform.rotation.eulerAngles.y;
             grabbing = true;
@@ -144,8 +164,8 @@ public class PlayerMovement : MonoBehaviour {
 
         if (grabbing)
         {
-            Vector3 actualXZ = new Vector3(grabbingPoint.transform.position.x, grabbableObjects[0].transform.position.y, grabbingPoint.transform.position.z);
-            grabbableObjects[0].transform.position = actualXZ;
+            Vector3 actualXZ = new Vector3(grabbingPoint.transform.position.x, grabbedObject.transform.position.y, grabbingPoint.transform.position.z);
+            grabbedObject.transform.position = actualXZ;
         }
 
         if (!Input.GetButton(grabButton) && grabbing)
@@ -153,11 +173,11 @@ public class PlayerMovement : MonoBehaviour {
             //let the grab
             grabbing = false;
             Vector3 pushDir = cylinder.transform.forward * 50;
-            Debug.Log(pushDir);
             // or cylinder.transform.forward*80;
             // or new Vector3(Input.GetAxis(xMovementAxis), 0, -Input.GetAxis(yMovementAxis)).normalized*100
-            grabbableObjects[0].GetComponent<Rigidbody>().AddForce(pushDir * (pushForce + (Mathf.Abs(spinValue) /spinForceRatio)));
+            grabbedObject.GetComponent<Rigidbody>().AddForce(pushDir * (pushForce + (Mathf.Abs(spinValue) /spinForceRatio)));
             spinValue = 0;
+            grabbedObject = null;
         }
 
     }
