@@ -155,6 +155,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grabbed: 0
+  agent: {fileID: 195962136504925766}
+  targets:
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!195 &195962136504925766
 NavMeshAgent:
   m_ObjectHideFlags: 1
@@ -173,6 +177,6 @@ NavMeshAgent:
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
-  m_BaseOffset: 0
+  m_BaseOffset: 0.5
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
