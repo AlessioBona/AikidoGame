@@ -174,6 +174,9 @@ public class PlayerMovement : MonoBehaviour
                 }
             }
             grabbedObject = toBeGrabbed;
+
+            grabbedObject.GetComponent<AleEnemyBehaviour>().Grabbed();
+
             Vector3 relativePos = grabbedObject.transform.position -
                                                      cylinder.transform.position;
             relativePos.y = 0;
@@ -192,15 +195,20 @@ public class PlayerMovement : MonoBehaviour
                 grabbingPoint.transform.position.z
             );
             grabbedObject.transform.position = actualXZ;
+            Vector3 relativePos = cylinder.transform.position - grabbedObject.transform.position;
+            relativePos.y = 0;
+            grabbedObject.transform.rotation = Quaternion.LookRotation(relativePos);
         }
 
         if (!grabButtonPressed && state.grabbing)
         {
+            grabbedObject.GetComponent<AleEnemyBehaviour>().Ungrabbed();
             state.grabbing = false;
             Vector3 pushDir = cylinder.transform.forward * 50;
             grabbedObject.GetComponent<Rigidbody>().AddForce(
                 pushDir * (pushForce + (Mathf.Abs(spin.value) / spin.forceRatio))
             );
+            grabbedObject.GetComponent<AleEnemyBehaviour>().charge = spin.value;
             spin.value = 0;
             grabbedObject = null;
         }
@@ -208,6 +216,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.name);
+        if (other.GetComponentInParent<EnemyData>())
+        {
+            Debug.Log(other.GetComponentInParent<EnemyData>().name);
+        }
     }
 }

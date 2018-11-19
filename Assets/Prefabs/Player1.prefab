@@ -69,7 +69,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4013250885785438}
-  - component: {fileID: 33174446865292208}
   - component: {fileID: 23213353371459480}
   - component: {fileID: 136386605426914652}
   m_Layer: 0
@@ -90,7 +89,7 @@ GameObject:
   - component: {fileID: 33030572548599520}
   - component: {fileID: 23062490971579034}
   - component: {fileID: 135520155882021564}
-  - component: {fileID: 54315479782204408}
+  - component: {fileID: 114864672534103822}
   m_Layer: 0
   m_Name: Sphere
   m_TagString: Untagged
@@ -109,7 +108,7 @@ GameObject:
   - component: {fileID: 33420049487033288}
   - component: {fileID: 23370836022361046}
   - component: {fileID: 136453954322055708}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cylinder
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -125,9 +124,10 @@ GameObject:
   m_Component:
   - component: {fileID: 4430113296399134}
   - component: {fileID: 114540554120225878}
+  - component: {fileID: 54427430085814162}
   m_Layer: 0
   m_Name: Player1
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -143,7 +143,7 @@ GameObject:
   - component: {fileID: 33299514903293946}
   - component: {fileID: 23214626935718894}
   - component: {fileID: 135724482409041114}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: GrappingPointSphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -158,7 +158,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4145715439456150}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: GrabbingPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -212,7 +212,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1742730352701210}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.83, z: 0}
+  m_LocalPosition: {x: -3.76, y: 1.19, z: 1.27}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4491397115357040}
@@ -371,7 +371,7 @@ MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1427261296996882}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -477,13 +477,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1498074832878472}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!33 &33174446865292208
-MeshFilter:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1427261296996882}
-  m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!33 &33299514903293946
 MeshFilter:
   m_ObjectHideFlags: 1
@@ -498,12 +491,12 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1607489756394596}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
---- !u!54 &54315479782204408
+--- !u!54 &54427430085814162
 Rigidbody:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1498074832878472}
+  m_GameObject: {fileID: 1742730352701210}
   serializedVersion: 2
   m_Mass: 5
   m_Drag: 4
@@ -536,9 +529,10 @@ MonoBehaviour:
   grabbingPoint: {fileID: 1974411577589626}
   grabbedObject: {fileID: 0}
   movementSpeed: 130
-  jumpForce: 1000
+  jumpForce: 4000
   rotationSpeed: 3
   pushForce: 60
+  canJumpCounter: 0
   grabbableObjects: []
   state:
     canJump: 1
@@ -555,6 +549,23 @@ MonoBehaviour:
     rotationSpeedRatio: 900
     emissionRatio: 40
     particles: {fileID: 198971530789676614}
+--- !u!114 &114864672534103822
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1498074832878472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 4
+  outlineColor: {r: 0.4008989, g: 0.55342954, b: 0.8584906, a: 0.63529414}
+  outlineWidth: 2
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
 --- !u!119 &119658913027984368
 Projector:
   m_ObjectHideFlags: 1
@@ -579,7 +590,7 @@ SphereCollider:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1498074832878472}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: a67d14d73b583314da1582147ac70970, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
