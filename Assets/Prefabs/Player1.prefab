@@ -524,6 +524,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ae3e998848785a42b70170f14a20670, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sphereColors: []
+  sphere: {fileID: 1498074832878472}
+  secondsPerHit: 0
   playerID: 1
   cylinder: {fileID: 1607489756394596}
   grabbingPoint: {fileID: 1974411577589626}

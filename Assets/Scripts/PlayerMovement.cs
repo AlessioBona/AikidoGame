@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+
+    public Color[] sphereColors;
+    public GameObject sphere;
+
+    public float secondsPerHit;
+    bool vulnerable = true;
+
     public string playerID;
     public GameObject cylinder;
     public GameObject grabbingPoint;
@@ -65,8 +72,11 @@ public class PlayerMovement : MonoBehaviour
         grabButton = "Grab" + playerID;
         rb = GetComponentInChildren<Rigidbody>();
         directionTo = cylinder.transform.rotation;
-    }
 
+        sphere.GetComponent<MeshRenderer>().material.color = sphereColors[0];
+
+
+    }
 
     void Update()
     {
@@ -216,9 +226,21 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.GetComponentInParent<EnemyData>())
+        if (other.GetComponentInParent<EnemyData>() && other.tag == "Damaging" && vulnerable)
         {
-            Debug.Log(other.GetComponentInParent<EnemyData>().name);
+            Debug.Log(other.name);
+            FindObjectOfType<RoundManager>().ChangeHealth(playerID, -other.GetComponentInParent<EnemyData>().damagePerHit);
+            StartCoroutine("HitTimer");
         }
+    }
+
+    IEnumerator HitTimer()
+    {
+        vulnerable = false;
+        sphere.GetComponent<MeshRenderer>().material.color = sphereColors[1];
+        yield return new WaitForSeconds(.1f);
+        sphere.GetComponent<MeshRenderer>().material.color = sphereColors[0];
+        yield return new WaitForSeconds(secondsPerHit - .1f);
+        vulnerable = true;
     }
 }

@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class EnemyData : MonoBehaviour {
 
-    public string name;
+    public string enemyName;
+    public float damagePerHit;
 
 	// Use this for initialization
 	void Start () {
