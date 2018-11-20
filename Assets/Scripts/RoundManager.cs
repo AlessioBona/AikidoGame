@@ -31,8 +31,8 @@ public class RoundManager : MonoBehaviour {
 
     void UpdateText()
     {
-        player1Text.text = "Player 1 Health: " + player1Health;
-        player2Text.text = "Player 2 Health: " + player2Health;
+        player1Text.text = "Player 1 Health: " + player1Health.ToString();
+        player2Text.text = "Player 2 Health: " + player2Health.ToString();
     }
 
     public void ChangeHealth(string player, float change) {
