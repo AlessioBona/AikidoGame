@@ -9,6 +9,8 @@ public class EnemyData : MonoBehaviour {
     public float damagePerHit;
     public float startHealth;
     public float actualHealth;
+    public GameObject deathExplosion;
+    public GameObject impactFX;
 
 	// Use this for initialization
 	void Start () {
@@ -27,6 +29,12 @@ public class EnemyData : MonoBehaviour {
     public void ChangeHealth(float change)
     {
         actualHealth += change;
+
+        if(actualHealth <= 0)
+        {
+            Instantiate(deathExplosion, this.gameObject.transform.position, this.gameObject.transform.rotation);
+            GameObject.Destroy(this.gameObject);
+        }
 
         // changeText
         if (GetComponentInChildren<TextMeshProUGUI>())

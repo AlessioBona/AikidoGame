@@ -228,7 +228,7 @@ public class PlayerMovement : MonoBehaviour
             grabbedObject.GetComponent<Rigidbody>().AddForce(
                 pushDir * (pushForce + (Mathf.Abs(spin.value) / spin.forceRatio))
             );
-            grabbedObject.GetComponent<AleEnemyBehaviour>().charge = spin.value;
+            grabbedObject.GetComponent<AleEnemyBehaviour>().charge = Mathf.Abs(spin.value);
             spin.value = 0;
             grabbedObject = null;
         }

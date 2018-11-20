@@ -295,7 +295,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grabbed: 0
+  chargeTH: 0
+  thrown: 0
+  recoverTime: 2
+  timeRecovered: 0
   charge: 0
+  selfCollisionDamage: 0
+  otherCollisionDamage: 0
 --- !u!114 &114650631121539576
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -309,13 +315,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyName: 
   damagePerHit: 10
+  startHealth: 100
+  actualHealth: 0
+  deathExplosion: {fileID: 0}
+  impactFX: {fileID: 193442, guid: 12673f4cc7f725d4082ece9c7c724b9c, type: 2}
 --- !u!136 &136885900813684150
 CapsuleCollider:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1619562805926864}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: e9ae4d291ad629e41bf40123dfd90e17, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5000001

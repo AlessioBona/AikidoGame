@@ -473,7 +473,7 @@ MonoBehaviour:
     mount: 3
     drop: 260
     forceRatio: 18
-    rotationSpeedRatio: 900
+    rotationSpeedRatio: 1200
     emissionRatio: 40
     particles: {fileID: 198971530789676614}
 --- !u!114 &114864672534103822
