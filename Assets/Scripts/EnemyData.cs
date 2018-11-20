@@ -26,14 +26,14 @@ public class EnemyData : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
     }
+
     public void ChangeHealth(float change)
     {
         actualHealth += change;
 
         if(actualHealth <= 0)
         {
-            Instantiate(deathExplosion, this.gameObject.transform.position, this.gameObject.transform.rotation);
-            GameObject.Destroy(this.gameObject);
+            Death();
         }
 
         // changeText
@@ -41,6 +41,12 @@ public class EnemyData : MonoBehaviour {
         {
             GetComponentInChildren<TextMeshProUGUI>().text = "Health: " + actualHealth.ToString();
         }
+    }
+
+    public void Death()
+    {
+        Instantiate(deathExplosion, this.gameObject.transform.position, this.gameObject.transform.rotation);
+        GameObject.Destroy(this.gameObject);
     }
 
 }

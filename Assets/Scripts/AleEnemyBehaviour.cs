@@ -64,6 +64,12 @@ public class AleEnemyBehaviour : MonoBehaviour {
             other.GetComponentInParent<PlayerMovement>().grabbableObjects
                  .Add(gameObject);
         }
+
+        if(other.tag == "Damaging" && other.gameObject.GetComponentInParent<BigEnemyBehaviour>())
+        {
+            myData.Death();
+            
+        }
     }
 
     private void OnTriggerExit(Collider other)
@@ -77,11 +83,15 @@ public class AleEnemyBehaviour : MonoBehaviour {
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.GetComponentInParent<EnemyData>() && !grabbed && charge > 0)
+        if (!grabbed && charge > 0)
         {
             Instantiate(myData.impactFX, collision.contacts[0].point, collision.gameObject.transform.rotation);
             myData.ChangeHealth(-selfCollisionDamage);
-            collision.gameObject.GetComponentInParent<EnemyData>().ChangeHealth(-otherCollisionDamage);
+
+            if (collision.gameObject.GetComponentInParent<EnemyData>()){
+                collision.gameObject.GetComponentInParent<EnemyData>().ChangeHealth(-otherCollisionDamage);
+            }
+            charge = 0;
         }
     }
 }
