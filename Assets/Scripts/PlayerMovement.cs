@@ -95,6 +95,7 @@ public class PlayerMovement : MonoBehaviour
                     -Input.GetAxis(yMovementAxis) * movementSpeed
                 )
             );
+
             directionTo = Quaternion.Euler(
                 new Vector3(
                     0,
@@ -116,7 +117,7 @@ public class PlayerMovement : MonoBehaviour
 
     void grabUpdate()
     {
-
+        // spin particles
         if (spin.particles.isPlaying && Mathf.Abs(spin.value) < spin.level1)
         {
             spin.particles.Stop();
@@ -126,6 +127,7 @@ public class PlayerMovement : MonoBehaviour
             spin.particles.Play();
         }
 
+        // spin charge
         if (state.grabbing)
         {
             float spinDifference = spin.lastDirection -
@@ -139,6 +141,7 @@ public class PlayerMovement : MonoBehaviour
             spin.lastDirection = cylinder.transform.rotation.eulerAngles.y;
         }
 
+        // spin drop
         if (spin.value != 0)
         {
             if (spin.value > spin.drop * Time.deltaTime)
@@ -156,10 +159,11 @@ public class PlayerMovement : MonoBehaviour
     {
         if (directionTo != cylinder.transform.rotation)
         {
-            cylinder.transform.rotation = Quaternion.Slerp(
-                cylinder.transform.rotation,
-                directionTo,
-                Time.deltaTime * (rotationSpeed + spin.value / spin.rotationSpeedRatio));
+            //cylinder.transform.rotation = Quaternion.Slerp(
+            //    cylinder.transform.rotation,
+            //    directionTo,
+            //    Time.deltaTime * (rotationSpeed + spin.value / spin.rotationSpeedRatio));
+            cylinder.transform.rotation = Quaternion.RotateTowards(cylinder.transform.rotation, directionTo, rotationSpeed + Mathf.Abs(spin.value) / spin.rotationSpeedRatio);
         }
 
         cylinder.transform.position = rb.transform.position;
@@ -168,16 +172,17 @@ public class PlayerMovement : MonoBehaviour
             rb.transform.position.x, 0.1f, rb.transform.position.z
         );
 
+
+        // Grab
         if (grabButtonPressed && grabbableObjects.Count > 0 && !state.grabbing)
         {
-            Debug.Log("grab object");
             GameObject toBeGrabbed = null;
             float minDist = Mathf.Infinity;
             Vector3 currentPos = rb.transform.position;
             foreach (GameObject enemy in grabbableObjects)
             {
                 float dist = Vector3.Distance(enemy.transform.position, currentPos);
-                if (dist < minDist)
+                if (dist < minDist && !enemy.GetComponent<AleEnemyBehaviour>().grabbed)
                 {
                     toBeGrabbed = enemy;
                     minDist = dist;
@@ -185,18 +190,22 @@ public class PlayerMovement : MonoBehaviour
             }
             grabbedObject = toBeGrabbed;
 
-            grabbedObject.GetComponent<AleEnemyBehaviour>().Grabbed();
+            if (grabbedObject != null)
+            {
+                grabbedObject.GetComponent<AleEnemyBehaviour>().Grabbed();
 
-            Vector3 relativePos = grabbedObject.transform.position -
-                                                     cylinder.transform.position;
-            relativePos.y = 0;
-            cylinder.transform.rotation = Quaternion.LookRotation(relativePos);
-            grabbingPoint.transform.position = grabbedObject.transform.position;
+                Vector3 relativePos = grabbedObject.transform.position -
+                                                         cylinder.transform.position;
+                relativePos.y = 0;
+                cylinder.transform.rotation = Quaternion.LookRotation(relativePos);
+                grabbingPoint.transform.position = grabbedObject.transform.position;
 
-            spin.lastDirection = cylinder.transform.rotation.eulerAngles.y;
-            state.grabbing = true;
+                spin.lastDirection = cylinder.transform.rotation.eulerAngles.y;
+                state.grabbing = true;
+            }
         }
 
+        // while Grab
         if (state.grabbing)
         {
             Vector3 actualXZ = new Vector3(
@@ -210,6 +219,7 @@ public class PlayerMovement : MonoBehaviour
             grabbedObject.transform.rotation = Quaternion.LookRotation(relativePos);
         }
 
+        // let it go
         if (!grabButtonPressed && state.grabbing)
         {
             grabbedObject.GetComponent<AleEnemyBehaviour>().Ungrabbed();

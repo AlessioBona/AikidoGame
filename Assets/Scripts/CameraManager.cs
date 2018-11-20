@@ -11,6 +11,9 @@ public class CameraManager : MonoBehaviour {
     public float offX;
     public float offZ;
 
+    public float zoomRatio;
+    float zoom = 0;
+
     public float MidX;
     public float MidZ;
     public Transform target1;
@@ -22,6 +25,9 @@ public class CameraManager : MonoBehaviour {
     public float bounds;
 
     Camera cam;
+    public GameObject cameraObject;
+    public Vector3 playerDistance;
+    public float distanceTolerance;
 
     void Awake()
     {
@@ -44,6 +50,9 @@ public class CameraManager : MonoBehaviour {
         cam = GetComponentInChildren<Camera>();
         offX = transform.position.x;
         offZ = transform.position.z;
+        zoom = cam.fieldOfView;
+        playerDistance = target2.position - target1.position;
+
     }
 
     // Update is called once per frame
@@ -53,7 +62,12 @@ public class CameraManager : MonoBehaviour {
         //MidY = (target2.position.y + target1.position.y) / 2;
         MidZ = (target2.position.z + target1.position.z) / 2;
 
+        playerDistance = target2.position - target1.position;
 
+        float linearDistance = Mathf.Abs(playerDistance.x) + Mathf.Abs(playerDistance.z);
+        if (linearDistance > distanceTolerance) {
+            cam.fieldOfView = zoom + (linearDistance-distanceTolerance) * zoomRatio;
+        }
 
 
         //distance = target1.position - target2.position;
@@ -101,10 +115,9 @@ public class CameraManager : MonoBehaviour {
 
 
         //Vector3 point = GetComponentInChildren<Camera>().WorldToViewportPoint(Midpoint);
-        Vector3 delta = Midpoint - transform.position;
-        Vector3 destination = transform.position + delta;
-        transform.position = Vector3.SmoothDamp(transform.position, destination, ref velocity, dampTime);
-
+        //Vector3 delta = Midpoint - transform.position;
+        //Vector3 destination = transform.position + delta;
+        transform.position = Vector3.SmoothDamp(transform.position, Midpoint, ref velocity, dampTime);
 
     }
 }

@@ -516,6 +516,7 @@ MonoBehaviour:
   dampTime: 0.15
   offX: 0
   offZ: 0
+  zoomRatio: 0.3
   MidX: 0
   MidZ: 0
   target1: {fileID: 703526381}
@@ -525,6 +526,9 @@ MonoBehaviour:
   camDistance: 0
   CamOffset: 0
   bounds: 0
+  cameraObject: {fileID: 1234216929}
+  playerDistance: {x: 0, y: 0, z: 0}
+  distanceTolerance: 10
 --- !u!4 &133842231
 Transform:
   m_ObjectHideFlags: 0
@@ -532,7 +536,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 133842229}
   m_LocalRotation: {x: 0.4422032, y: -0.000000007450581, z: -0, w: 0.89691496}
-  m_LocalPosition: {x: 0, y: 29.903683, z: -27.69844}
+  m_LocalPosition: {x: 0, y: 32.24, z: -24.66}
   m_LocalScale: {x: 1, y: 0, z: 0}
   m_Children:
   - {fileID: 1234216932}
@@ -2424,7 +2428,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4430113296399134, guid: 4f51367e491a28b41abcbb4a44759d73, type: 2}
       propertyPath: m_LocalPosition.x
-      value: -3.76
+      value: -6.12
       objectReference: {fileID: 0}
     - target: {fileID: 4430113296399134, guid: 4f51367e491a28b41abcbb4a44759d73, type: 2}
       propertyPath: m_LocalPosition.y
@@ -2844,7 +2848,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 26
+  field of view: 24.9
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
